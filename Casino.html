@@ -50,8 +50,124 @@ function casino(){
 	game = true;
 }
 
-//начало игры
+//Black Jack
+//определяем номер карты для раздачи
+function getRandomInt(min, max){
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+//тянем карту
+function getCard(){
+	var cards = ['2','3','4','5','6', '7', '8', '9', '10', 'J', 'Q', 'K', "A"];
+	return cards[getRandomInt(0, cards.length - 1)];
+}
+//определяем сумму карт на руке
+function getSum(hand){
+	var sum = 0;
+	for (var i = 0; i < hand.length; i++){
+		if (hand[i] != 'A'){
+			if (isNaN(hand[i])){
+				sum += 10;
+			} else
+				sum += parseInt(hand[i]);
+		}
+	}
+	for (var i = 0; i < hand.length; i++){
+		if (hand[i] == "A"){
+			if (sum > 10)
+				sum += 1;
+			else
+				sum += 11;
+		}
+	}
+	return sum;
+}
+//выводим текущий статус игры
+function getStatus(dealer, player){
+	return ("\nДилер: " + dealer.join(', ') + '\nИгрок: ' + player.join(', ') + '.');
+}
+//общий функционал игры
+function blackJackGame(dealer, player, count){
+	var result;
+	alert("игра # " + count);
+	
+	if (getSum(player) == 21){
+		alert('Дьявольское везение! Black Jack на раздаче. $_$');
+		result = "win";
+	} else {
+		var answer;
+		do {
+			answer = prompt(getStatus(dealer, player) + '\nХотите взять ещё 1 карту?\n1 - да, иначе - нет.');
+		//сдаем карту, либо прекращаем игру
+			if (answer == 1) {
+				player.push(getCard());
+				sum = getSum(player);
+				if (sum == 21){
+					alert("Black Jack! (:\n" + getStatus(dealer, player));
+					result = "win";
+					break;
+				} else if (sum > 21){
+					alert("Перебор T_T\n" + getStatus(dealer, player));
+					result = "loose";
+					break;
+				}
+			} else {
+				while (getSum(dealer) < 17){
+					dealer.push(getCard());
+				}
 
+				var sumDealer = getSum(dealer);
+				var sumPlayer = getSum(player);
+
+				if (sumDealer == 21){
+					alert('У дилера Black Jack! T_T\n' + getStatus(dealer, player));
+					result = "loose";
+				} else if (sumDealer > 21){
+					alert('У дилера перебор! ]:->\n' + getStatus(dealer, player));
+					result = "win";
+				} else if (sumDealer < sumPlayer){
+					alert('Выигрыш! (:\n' + getStatus(dealer, player));
+					result = "win";
+				} else if (sumPlayer == sumDealer){
+					alert('Ничья! О_о\n' + getStatus(dealer, player))
+					result = "deadlock";
+				} else {
+					alert('Проигрыш. :(\n' + getStatus(dealer, player));
+					result = "loose";
+				}
+			}
+		} while(answer == '1');
+	}
+	return result;
+}
+//сама игра
+function blackJack(){
+	alert(" \tBlack Jack.\nВы уселись за стол и приготовились к сдаче карт.");
+	var deadlocks = 0;
+	var wins = 0;
+	var looses = 0;
+	var count = 0;
+
+	while(true){
+		var dealer = [getCard()];
+		var player = [getCard(), getCard()];
+		count++;
+		var s = blackJackGame(dealer, player, count);
+		if (s == "win"){
+			wins++;
+		} else if (s == "loose"){
+			looses++;
+		} else {
+			deadlocks++;
+		}
+		var end = prompt("Хотите продолжить?\n1 - да, остальное - нет");
+		if (end != 1){
+			alert("Ваш результат:\nНичьи: " + deadlocks + "\nПобеды: " + wins + "\nПроигрыши: " + looses);
+			break;
+		}
+	}
+}
+
+//начало игры
 alert("Утро 1 авг'16. Минск, Беларусь.\nГуляя по парку, вы находите свёрток, в котором лежит 200 руб.\n\"Неплохая находка!\" - подумали вы. - \"Это же четверть зарплаты!\"\n\"Что бы такого с ними сделать?\"");
 
 var decision;
@@ -77,12 +193,18 @@ while(true){
 }
 
 //Идём в казино?
-while (game){
+while(game){
 	decision = prompt("Добро пожаловать в казино!\nКакая игра вас больше всего интересует?\n\n1 - Black Jack\n2 - Русская рулетка(смертельно опасно)\n3 - Европейская рулетка\n4 - Американтская рулетка\n0 - Покинуть заведение");
 	if (decision == 0){
 		break;
-	} else if (decision == 1){
-		alert("Играем в 21");
+	} else if(decision == 1){
+		blackJack();
+	} else if(decision == 2){
+		alert("сыграем с оружием");
+	} else if(decision == 3){
+		alert("сыграем в европейскую рулетку");
+	} else if(decision == 3){
+		alert("сыграем в американскую рулетку (0 и 00)");
 	}
 }
 
