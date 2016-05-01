@@ -50,6 +50,42 @@ function casino(){
 	game = true;
 }
 
+//механизм принятия ставок
+function getBet(count, arr){
+	var decision = "игра # " + count + "\nСделайте вашу ставку:";
+	var betting = true;
+	var bet;
+//заполнение списка ставок
+	for (var i = 0; i < arr.length; i++){
+		var concat = "\n" + (i + 1) + " - " + arr[i] + " руб.";
+		decision += concat;
+	}
+
+	while(betting){
+		bet = prompt(decision);
+		for (var i = 0; i < arr.length; i++){
+			if (bet == (i + 1)){
+				bet = arr[i];
+				alert("Вы поставили " + bet + " руб.");
+				betting = false;
+				break;
+			}
+		}
+	}
+	return bet;
+}
+
+//Банкротство (lobby или table)
+function getBankrupt(min, place){
+	var message1 = "У вас всего " + cash + " руб. Минимальная сумма наличности для допуска в зал - " + min + " руб.";
+	var message2 = "Менеджер казино отвёл вас в сторонку. Вы почувствовали на себе холодный взгляд со стороны плотяного шкафа в тонированных очках. Дело запахло керосином.\n\n\"К сожалению, мы вынуждены попросить вас уйти. Для того, чтобы остаться в зале, вы должны иметь по крайней мере " + min + " руб. Попытайте счастья в другом зале.";
+	if (place == "table"){
+		alert(message1);
+	} else if (place == "lobby"){
+		alert(message2);
+	}
+}
+
 //Black Jack
 //определяем номер карты для раздачи
 function getRandomInt(min, max){
@@ -85,37 +121,12 @@ function getSum(hand){
 function getStatus(dealer, player){
 	return ("\nДилер: " + dealer.join(', ') + '\nИгрок: ' + player.join(', ') + '.');
 }
-//механизм принятия ставок
-function getBet(count, arr){
-	var decision = "игра # " + count + "\nСделайте вашу ставку:";
-	var betting = true;
-	var bet;
-//заполнение списка ставок
-	for (var i = 0; i < arr.length; i++){
-		var concat = "\n" + (i + 1) + " - " + arr[i] + " руб.";
-		decision += concat;
-	}
-
-	while(betting){
-		bet = prompt(decision);
-		for (var i = 0; i < arr.length; i++){
-			if (bet == (i + 1)){
-				bet = arr[i];
-				alert("Вы поставили " + bet + " руб.");
-				betting = false;
-				break;
-			}
-		}
-	}
-	return bet;
-}
-//общий функционал игры
+//общий функционал игры Black Jack
 function blackJackGame(dealer, player, count, cash){
 	var result = 0;
 
 	var arr = [1, 2, 5, 10, 20];
 	var bet = getBet(count, arr);
-	alert(bet);
 
 	if (getSum(player) == 21){
 		alert('Дьявольское везение! Black Jack на раздаче. $_$');
@@ -166,38 +177,48 @@ function blackJackGame(dealer, player, count, cash){
 	}
 	return result;
 }
-//сама игра
+//процесс игры
 function blackJack(cash){
-	alert(" \tBlack Jack.\nВы уселись за стол и приготовились к сдаче карт.");
-	var deadlocks = 0;
-	var wins = 0;
-	var looses = 0;
-	var count = 0;
+	var min = 30;
+	if (cash < min){
+		getBankrupt(min, lobby);
+	} else {
+		alert(" \tBlack Jack.\nВы уселись за стол и приготовились к сдаче карт.");
+		var deadlocks = 0;
+		var wins = 0;
+		var looses = 0;
+		var count = 0;
 
-	while(true){
-		var dealer = [getCard()];
-		var player = [getCard(), getCard()];
-		count++;
-		var s = blackJackGame(dealer, player, count, cash);
-		cash += s;
-		if (s > 0){
-			wins++;
-		} else if (s < 0){
-			looses++;
-		} else {
-			deadlocks++;
-		}
-		var end = prompt("У вас на руках " + cash + " руб. Хотите продолжить?\n1 - да, остальное - нет");
-		if (end != 1){
-			alert("Ваш результат:\nНичьи: " + deadlocks + "\nПобеды: " + wins + "\nПроигрыши: " + looses + "\nНаличка: " + cash + " руб.");
-			break;
+		while(true){
+			if (cash < 30){
+				getBankrupt(min, table);
+				break;
+			} else {
+				var dealer = [getCard()];
+				var player = [getCard(), getCard()];
+				count++;
+				var s = blackJackGame(dealer, player, count, cash);
+				cash += s;
+				if (s > 0){
+					wins++;
+				} else if (s < 0){
+					looses++;
+				} else {
+					deadlocks++;
+				}
+				var end = prompt("У вас на руках " + cash + " руб. Хотите продолжить?\n1 - да, остальное - нет");
+				if (end != 1){
+					alert("Ваш результат:\nНичьи: " + deadlocks + "\nПобеды: " + wins + "\nПроигрыши: " + looses + "\nНаличка: " + cash + " руб.");
+					break;
+				}
+			}
 		}
 	}
 	return cash;
 }
 
 //начало игры
-var cash = getRandomInt(50, 123);
+var cash = getRandomInt(30, 40);
 alert("Утро 1 авг'16. Минск, Беларусь.\nГуляя по парку, вы находите свёрток, в котором лежит " + cash + " руб.\n\"Неплохая находка!\" - подумали вы.\n\"Что бы такого с ними сделать?\"");
 
 var decision;
