@@ -15,7 +15,7 @@ function deposit(rub, pct, term){
 	return Math.round(rub);
 }
 //Идём в банк
-function fate(){
+function fate(cash){
 //Определяем процентную ставку
 	var depo = Math.round(Math.random() * 7 + 7);
 	var message = "Вы нашли очень выгодную долгосрочного депозита. " + depo + "% годовых.";
@@ -23,7 +23,7 @@ function fate(){
 //Судьба-злодейка. Определяем будущее
 	var fateTime = Math.round(Math.random() * 5);
 	if (fateTime == 5){
-		alert("Через 5 лет вы благополучно закрыли депозит и забрали свои " + deposit(100, depo, 5) + " руб.");
+		alert("Через 5 лет вы благополучно закрыли депозит и забрали свои " + deposit(cash, depo, 5) + " руб.");
 	} else if (fateTime == 4){
 		alert("Через 4 года вы задолжали крупную сумму. Некоторую её часть вы покрыли своим депозитом, остальное вам предстоит отрабатывать долгие годы.");
 	} else if (fateTime == 3){
@@ -86,7 +86,7 @@ function getStatus(dealer, player){
 	return ("\nДилер: " + dealer.join(', ') + '\nИгрок: ' + player.join(', ') + '.');
 }
 //общий функционал игры
-function blackJackGame(dealer, player, count){
+function blackJackGame(dealer, player, count, cash){
 	var result;
 	alert("игра # " + count);
 	
@@ -140,7 +140,7 @@ function blackJackGame(dealer, player, count){
 	return result;
 }
 //сама игра
-function blackJack(){
+function blackJack(cash){
 	alert(" \tBlack Jack.\nВы уселись за стол и приготовились к сдаче карт.");
 	var deadlocks = 0;
 	var wins = 0;
@@ -151,24 +151,28 @@ function blackJack(){
 		var dealer = [getCard()];
 		var player = [getCard(), getCard()];
 		count++;
-		var s = blackJackGame(dealer, player, count);
+		var s = blackJackGame(dealer, player, count, cash);
 		if (s == "win"){
 			wins++;
+			cash++;
 		} else if (s == "loose"){
 			looses++;
+			cash--;
 		} else {
 			deadlocks++;
 		}
-		var end = prompt("Хотите продолжить?\n1 - да, остальное - нет");
+		var end = prompt("У вас на руках " + cash + " руб. Хотите продолжить?\n1 - да, остальное - нет");
 		if (end != 1){
-			alert("Ваш результат:\nНичьи: " + deadlocks + "\nПобеды: " + wins + "\nПроигрыши: " + looses);
+			alert("Ваш результат:\nНичьи: " + deadlocks + "\nПобеды: " + wins + "\nПроигрыши: " + looses + "\nНаличка: " + cash + " руб.");
 			break;
 		}
 	}
+	return cash;
 }
 
 //начало игры
-alert("Утро 1 авг'16. Минск, Беларусь.\nГуляя по парку, вы находите свёрток, в котором лежит 200 руб.\n\"Неплохая находка!\" - подумали вы. - \"Это же четверть зарплаты!\"\n\"Что бы такого с ними сделать?\"");
+var cash = getRandomInt(50, 123);
+alert("Утро 1 авг'16. Минск, Беларусь.\nГуляя по парку, вы находите свёрток, в котором лежит " + cash + " руб.\n\"Неплохая находка!\" - подумали вы.\n\"Что бы такого с ними сделать?\"");
 
 var decision;
 var godsend = "1 - Положить на место и отправиться восвояси;\n2 - Открыть в банке депозит на 5 лет (до очередной инаугурации);\n3 - Найти притон и наприниматься там всяких конфет да шоколадок;\n4 - Сходить в казино;";
@@ -181,7 +185,7 @@ while(true){
 		loseGodSend();
 		break;
 	} else if (decision == 2){
-		fate();
+		fate(cash);
 		break;
 	} else if (decision == 3){
 		crackhouse();
@@ -194,11 +198,11 @@ while(true){
 
 //Идём в казино?
 while(game){
-	decision = prompt("Добро пожаловать в казино!\nКакая игра вас больше всего интересует?\n\n1 - Black Jack\n2 - Русская рулетка(смертельно опасно)\n3 - Европейская рулетка\n4 - Американтская рулетка\n0 - Покинуть заведение");
+	decision = prompt("Добро пожаловать в казино!\nВаша наличность - " + cash + " руб.\nКакая игра вас больше всего интересует?\n\n1 - Black Jack\n2 - Русская рулетка(смертельно опасно)\n3 - Европейская рулетка\n4 - Американтская рулетка\n0 - Покинуть заведение");
 	if (decision == 0){
 		break;
 	} else if(decision == 1){
-		blackJack();
+		cash = blackJack(cash);
 	} else if(decision == 2){
 		alert("сыграем с оружием");
 	} else if(decision == 3){
