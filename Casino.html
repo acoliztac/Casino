@@ -217,6 +217,31 @@ function blackJack(cash){
 	return cash;
 }
 
+//общий функционал игры Русская рулетка
+function russianRouletteGame(count){
+	var fate = Math.round(Math.random() * 5 + 1);
+	if (fate == 1){
+		count = "Смерть";
+	} else {
+		alert("Вы крепко зажмурились, поднесли револьвер к веску...\n\nРаздался щелчок.");
+		count++;
+	}
+	return count;
+}
+//процесс игры
+function russianRoulette(cash){
+	var count = 1;
+	while (true){
+		decision = prompt("Это смертельно опасная игра.\nНа одной чаше весов - увеличение вашего капитала во столько раз, сколько вы продержитесь в живых!\nНа другой - ваша жизнь.\n\nКоличество раундов - " + (count - 1) + "\n\nВы готовы рискнуть?\n1 - Да (Выиграть " + (cash * (count + 1)) + " руб.)\nиначе -  Нет (Забрать " + (cash * count) + " руб.)");
+		if (decision == 1){
+			count = russianRouletteGame(count);
+		} else{
+			break;
+		}
+	}
+	return (cash * count);
+}
+
 //начало игры
 var cash = getRandomInt(50, 142);
 alert("Утро 1 авг'16. Минск, Беларусь.\nГуляя по парку, вы находите свёрток, в котором лежит " + cash + " руб.\n\"Неплохая находка!\" - подумали вы.\n\"Что бы такого с ними сделать?\"");
@@ -245,13 +270,17 @@ while(true){
 
 //Идём в казино?
 while(game){
+	if (cash == "Смерть"){
+		alert("Последнее доказательство вашего сущетсвования - пятно на стене.");
+		break;
+	}
 	decision = prompt("Добро пожаловать в казино!\nВаша наличность - " + cash + " руб.\nКакая игра вас больше всего интересует?\n\n1 - Black Jack\n2 - Русская рулетка (смертельно опасно)\n3 - Европейская рулетка\n4 - Американская рулетка\n0 - Покинуть заведение");
 	if (decision == 0){
 		break;
 	} else if(decision == 1){
 		cash = blackJack(cash);
 	} else if(decision == 2){
-		alert("сыграем с оружием");
+		cash = russianRoulette(cash);
 	} else if(decision == 3){
 		alert("сыграем в европейскую рулетку");
 	} else if(decision == 3){
@@ -259,5 +288,6 @@ while(game){
 	}
 }
 
+alert("Конец игры.");
 	
 </script>
