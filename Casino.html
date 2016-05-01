@@ -87,12 +87,38 @@ function getStatus(dealer, player){
 }
 //общий функционал игры
 function blackJackGame(dealer, player, count, cash){
-	var result;
-	alert("игра # " + count);
-	
+	var result = 0;
+	var decision = "игра # " + count + "\nСделайте вашу ставку:\n1 - 1 руб.\n2 - 2 руб.\n3 - 5 руб.\n4 - 10 руб.\n5 - 20 руб.";
+	var bet;
+
+	while(true){
+		bet = prompt(decision);
+		if (bet == 1){
+			alert("Вы поставили 1 руб.");
+			bet = 1;
+			break;
+		} else if (bet == 2){
+			alert("Вы поставили 2 руб.");
+			bet = 2;
+			break;
+		} else if (bet == 3){
+			alert("Вы поставили 5 руб.");
+			bet = 5;
+			break;
+		} else if (bet == 4){
+			alert("Вы поставили 10 руб.");
+			bet = 10;
+			break;
+		} else if (bet == 5){
+			alert("Вы поставили 20 руб.");
+			bet = 20;
+			break;
+		}
+	}
+
 	if (getSum(player) == 21){
 		alert('Дьявольское везение! Black Jack на раздаче. $_$');
-		result = "win";
+		result += bet;
 	} else {
 		var answer;
 		do {
@@ -103,11 +129,11 @@ function blackJackGame(dealer, player, count, cash){
 				sum = getSum(player);
 				if (sum == 21){
 					alert("Black Jack! (:\n" + getStatus(dealer, player));
-					result = "win";
+					result += bet;
 					break;
 				} else if (sum > 21){
 					alert("Перебор T_T\n" + getStatus(dealer, player));
-					result = "loose";
+					result -= bet;
 					break;
 				}
 			} else {
@@ -120,19 +146,19 @@ function blackJackGame(dealer, player, count, cash){
 
 				if (sumDealer == 21){
 					alert('У дилера Black Jack! T_T\n' + getStatus(dealer, player));
-					result = "loose";
+					result -= bet;
 				} else if (sumDealer > 21){
 					alert('У дилера перебор! ]:->\n' + getStatus(dealer, player));
-					result = "win";
+					result += bet;
 				} else if (sumDealer < sumPlayer){
 					alert('Выигрыш! (:\n' + getStatus(dealer, player));
-					result = "win";
+					result += bet;
 				} else if (sumPlayer == sumDealer){
 					alert('Ничья! О_о\n' + getStatus(dealer, player))
-					result = "deadlock";
+					result = 0;
 				} else {
 					alert('Проигрыш. :(\n' + getStatus(dealer, player));
-					result = "loose";
+					result -= bet;
 				}
 			}
 		} while(answer == '1');
@@ -152,12 +178,11 @@ function blackJack(cash){
 		var player = [getCard(), getCard()];
 		count++;
 		var s = blackJackGame(dealer, player, count, cash);
-		if (s == "win"){
+		cash += s;
+		if (s > 0){
 			wins++;
-			cash++;
-		} else if (s == "loose"){
+		} else if (s < 0){
 			looses++;
-			cash--;
 		} else {
 			deadlocks++;
 		}
