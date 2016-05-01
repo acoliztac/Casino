@@ -85,36 +85,37 @@ function getSum(hand){
 function getStatus(dealer, player){
 	return ("\nДилер: " + dealer.join(', ') + '\nИгрок: ' + player.join(', ') + '.');
 }
+//механизм принятия ставок
+function getBet(count, arr){
+	var decision = "игра # " + count + "\nСделайте вашу ставку:";
+	var betting = true;
+	var bet;
+//заполнение списка ставок
+	for (var i = 0; i < arr.length; i++){
+		var concat = "\n" + (i + 1) + " - " + arr[i] + " руб.";
+		decision += concat;
+	}
+
+	while(betting){
+		bet = prompt(decision);
+		for (var i = 0; i < arr.length; i++){
+			if (bet == (i + 1)){
+				bet = arr[i];
+				alert("Вы поставили " + bet + " руб.");
+				betting = false;
+				break;
+			}
+		}
+	}
+	return bet;
+}
 //общий функционал игры
 function blackJackGame(dealer, player, count, cash){
 	var result = 0;
-	var decision = "игра # " + count + "\nСделайте вашу ставку:\n1 - 1 руб.\n2 - 2 руб.\n3 - 5 руб.\n4 - 10 руб.\n5 - 20 руб.";
-	var bet;
 
-	while(true){
-		bet = prompt(decision);
-		if (bet == 1){
-			alert("Вы поставили 1 руб.");
-			bet = 1;
-			break;
-		} else if (bet == 2){
-			alert("Вы поставили 2 руб.");
-			bet = 2;
-			break;
-		} else if (bet == 3){
-			alert("Вы поставили 5 руб.");
-			bet = 5;
-			break;
-		} else if (bet == 4){
-			alert("Вы поставили 10 руб.");
-			bet = 10;
-			break;
-		} else if (bet == 5){
-			alert("Вы поставили 20 руб.");
-			bet = 20;
-			break;
-		}
-	}
+	var arr = [1, 2, 5, 10, 20];
+	var bet = getBet(count, arr);
+	alert(bet);
 
 	if (getSum(player) == 21){
 		alert('Дьявольское везение! Black Jack на раздаче. $_$');
