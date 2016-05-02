@@ -396,33 +396,36 @@ function getBankrupt(min, place){
 			//чёт/нечёт
 			if ((result == 45 && even) || (result == 46 && odd)){
 				bet = bet;
-				text1 = "о " + ball + " " + oneByOne[result - 45];
-			} else if (result == 45 || res == 46) {
+				text1 = "о " + ball + " (" + oneByOne[result - 45] + ")";
+			} else if (result == 45 || result == 46) {
 				bet = (0 - bet);
-				text1 = "о " + ball + " " + oneByOne1[result - 45];
+				text1 = "о " + ball + " (" + oneByOne1[result - 45] + ")";
 			}
 			//Чёрное/красное
-			if ((result == 47 && black) || (result == 48 && red){
+			if ((result == 47 && black) || (result == 48 && red)){
 				bet = bet;
-				text1 = "о " + ball + " " + oneByOne[result - 47];
-	} {while
-			// 	bet = bet;
-			// 	text1 = "о " + ball + " " + oneByOne[result - 47];
-			// } else if (){
-			// 	bet = (0 - bet);
-			// 	text1 = "о " + ball + " " + oneByOne1[result - 47];
-			// }
-		
+				text1 = "о " + ball + " (" + oneByOne[result - 45] + ")";
+			} else if (result == 47 || result == 48){
+				bet = (0 - bet);
+				text1 = "о " + ball + " (" + oneByOne1[result - 45] + ")";
+			}
+			//Малое/большое
+			if ((result == 49 && low) || (result == 50 & high)){
+				bet = bet;
+				text1 = "о " + ball + " (" + oneByOne[result - 45] + ")";
+			} else if (result == 49 || result == 50){
+				bet = (0 - bet);
+				text1 = "о " + ball + " (" + oneByOne1[result - 45] + ")";
+			}
+		}
 
-		{
-			
 		if (bet > 0){
 			alert("Вы поставили на " + text + ". Выпал" + text1 + ". Поздравляем с выигрышом.");
 		} else {
 			alert("К сожалению, вы поставили на " + text + ", а выпал" + text1 + ". Попытайте счастья снова.");
 		}
 		return bet;
-		}
+	}
 	
 //общий функционал игры Европейская рулетка
 	function europeanRouletteGame(cash, count) {
@@ -433,7 +436,7 @@ function getBankrupt(min, place){
 		var array = [1, 2, 5, 10, 50, 100];
 		while (true){
 			decision = prompt(type);
-			if (decision >= 1 && decision <= 4){
+			if (decision >= 1 && decision <= 5){
 				result = getTypeOfBet(decision); 	//Принятая ставка
 				bet = getBet(count, array);			//Принятая сумма
 				ball = getRollingRoulette(36);		//Выпавшее число
