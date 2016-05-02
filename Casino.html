@@ -87,160 +87,376 @@ function getBankrupt(min, place){
 }
 
 //Black Jack
-//определяем номер карты для раздачи
-function getRandomInt(min, max){
-		return Math.floor(Math.random() * (max - min + 1)) + min;
-	}
-//тянем карту
-function getCard(){
-	var cards = ['2','3','4','5','6', '7', '8', '9', '10', 'J', 'Q', 'K', "A"];
-	return cards[getRandomInt(0, cards.length - 1)];
-}
-//определяем сумму карт на руке
-function getSum(hand){
-	var sum = 0;
-	for (var i = 0; i < hand.length; i++){
-		if (hand[i] != 'A'){
-			if (isNaN(hand[i])){
-				sum += 10;
-			} else
-				sum += parseInt(hand[i]);
+	//определяем номер карты для раздачи
+	function getRandomInt(min, max){
+			return Math.floor(Math.random() * (max - min + 1)) + min;
 		}
+	//тянем карту
+	function getCard(){
+		var cards = ['2','3','4','5','6', '7', '8', '9', '10', 'J', 'Q', 'K', "A"];
+		return cards[getRandomInt(0, cards.length - 1)];
 	}
-	for (var i = 0; i < hand.length; i++){
-		if (hand[i] == "A"){
-			if (sum > 10)
-				sum += 1;
-			else
-				sum += 11;
+	//определяем сумму карт на руке
+	function getSum(hand){
+		var sum = 0;
+		for (var i = 0; i < hand.length; i++){
+			if (hand[i] != 'A'){
+				if (isNaN(hand[i])){
+					sum += 10;
+				} else
+					sum += parseInt(hand[i]);
+			}
 		}
+		for (var i = 0; i < hand.length; i++){
+			if (hand[i] == "A"){
+				if (sum > 10)
+					sum += 1;
+				else
+					sum += 11;
+			}
+		}
+		return sum;
 	}
-	return sum;
-}
-//выводим текущий статус игры
-function getStatus(dealer, player){
-	return ("\nДилер: " + dealer.join(', ') + '\nИгрок: ' + player.join(', ') + '.');
-}
-//общий функционал игры Black Jack
-function blackJackGame(dealer, player, count, cash){
-	var result = 0;
+	//выводим текущий статус игры
+	function getStatus(dealer, player){
+		return ("\nДилер: " + dealer.join(', ') + '\nИгрок: ' + player.join(', ') + '.');
+	}
+	//общий функционал игры Black Jack
+	function blackJackGame(dealer, player, count, cash){
+		var result = 0;
 
-	var arr = [1, 2, 5, 10, 20];
-	var bet = getBet(count, arr);
+		var arr = [1, 2, 5, 10, 20];
+		var bet = getBet(count, arr);
 
-	if (getSum(player) == 21){
-		alert('Дьявольское везение! Black Jack на раздаче. $_$');
-		result += bet;
-	} else {
-		var answer;
-		do {
-			answer = prompt(getStatus(dealer, player) + '\nХотите взять ещё 1 карту?\n1 - да, иначе - нет.');
-		//сдаем карту, либо прекращаем игру
-			if (answer == 1) {
-				player.push(getCard());
-				sum = getSum(player);
-				if (sum == 21){
-					alert("Black Jack! (:\n" + getStatus(dealer, player));
-					result += bet;
-					break;
-				} else if (sum > 21){
-					alert("Перебор T_T\n" + getStatus(dealer, player));
-					result -= bet;
-					break;
-				}
-			} else {
-				while (getSum(dealer) < 17){
-					dealer.push(getCard());
-				}
-
-				var sumDealer = getSum(dealer);
-				var sumPlayer = getSum(player);
-
-				if (sumDealer == 21){
-					alert('У дилера Black Jack! T_T\n' + getStatus(dealer, player));
-					result -= bet;
-				} else if (sumDealer > 21){
-					alert('У дилера перебор! ]:->\n' + getStatus(dealer, player));
-					result += bet;
-				} else if (sumDealer < sumPlayer){
-					alert('Выигрыш! (:\n' + getStatus(dealer, player));
-					result += bet;
-				} else if (sumPlayer == sumDealer){
-					alert('Ничья! О_о\n' + getStatus(dealer, player))
-					result = 0;
+		if (getSum(player) == 21){
+			alert('Дьявольское везение! Black Jack на раздаче. $_$');
+			result += bet;
+		} else {
+			var answer;
+			do {
+				answer = prompt(getStatus(dealer, player) + '\nХотите взять ещё 1 карту?\n1 - да, иначе - нет.');
+			//сдаем карту, либо прекращаем игру
+				if (answer == 1) {
+					player.push(getCard());
+					sum = getSum(player);
+					if (sum == 21){
+						alert("Black Jack! (:\n" + getStatus(dealer, player));
+						result += bet;
+						break;
+					} else if (sum > 21){
+						alert("Перебор T_T\n" + getStatus(dealer, player));
+						result -= bet;
+						break;
+					}
 				} else {
-					alert('Проигрыш. :(\n' + getStatus(dealer, player));
-					result -= bet;
+					while (getSum(dealer) < 17){
+						dealer.push(getCard());
+					}
+
+					var sumDealer = getSum(dealer);
+					var sumPlayer = getSum(player);
+
+					if (sumDealer == 21){
+						alert('У дилера Black Jack! T_T\n' + getStatus(dealer, player));
+						result -= bet;
+					} else if (sumDealer > 21){
+						alert('У дилера перебор! ]:->\n' + getStatus(dealer, player));
+						result += bet;
+					} else if (sumDealer < sumPlayer){
+						alert('Выигрыш! (:\n' + getStatus(dealer, player));
+						result += bet;
+					} else if (sumPlayer == sumDealer){
+						alert('Ничья! О_о\n' + getStatus(dealer, player))
+						result = 0;
+					} else {
+						alert('Проигрыш. :(\n' + getStatus(dealer, player));
+						result -= bet;
+					}
+				}
+			} while(answer == '1');
+		}
+		return result;
+	}
+	//процесс игры
+	function blackJack(cash){
+		var min = 30;
+		if (cash < min){
+			getBankrupt(min, 1);
+		} else {
+			alert(" \tBlack Jack.\nВы уселись за стол и приготовились к сдаче карт.");
+			var deadlocks = 0;
+			var wins = 0;
+			var looses = 0;
+			var count = 0;
+
+			while(true){
+				if (cash < 30){
+					getBankrupt(min, 2);
+					break;
+				} else {
+					var dealer = [getCard()];
+					var player = [getCard(), getCard()];
+					count++;
+					var s = blackJackGame(dealer, player, count, cash);
+					cash += s;
+					if (s > 0){
+						wins++;
+					} else if (s < 0){
+						looses++;
+					} else {
+						deadlocks++;
+					}
+					var end = prompt("У вас на руках " + cash + " руб. Хотите продолжить?\n1 - да, остальное - нет");
+					if (end != 1){
+						alert("Ваш результат:\nНичьи: " + deadlocks + "\nПобеды: " + wins + "\nПроигрыши: " + looses + "\nНаличка: " + cash + " руб.");
+						break;
+					}
 				}
 			}
-		} while(answer == '1');
+		}
+		return cash;
 	}
-	return result;
-}
-//процесс игры
-function blackJack(cash){
-	var min = 30;
-	if (cash < min){
-		getBankrupt(min, 1);
-	} else {
-		alert(" \tBlack Jack.\nВы уселись за стол и приготовились к сдаче карт.");
-		var deadlocks = 0;
-		var wins = 0;
-		var looses = 0;
-		var count = 0;
 
-		while(true){
-			if (cash < 30){
-				getBankrupt(min, 2);
+//Русская рулетка
+	//общий функционал игры Русская рулетка
+	function russianRouletteGame(count){
+		var fate = Math.round(Math.random() * 5 + 1);
+		if (fate == 1){
+			count = "Смерть";
+		} else {
+			alert("Вы крепко зажмурились, поднесли револьвер к веску...\n\nРаздался щелчок.");
+			count++;
+		}
+		return count;
+	}
+	//процесс игры
+	function russianRoulette(cash){
+		var count = 1;
+		while (true){
+			decision = prompt("Это смертельно опасная игра.\nНа одной чаше весов - увеличение вашего капитала во столько раз, сколько вы продержитесь в живых!\nНа другой - ваша жизнь.\n\nКоличество раундов - " + (count - 1) + "\n\nВы готовы рискнуть?\n1 - Да (Выиграть " + (cash * (count + 1)) + " руб.)\nиначе -  Нет (Забрать " + (cash * count) + " руб.)");
+			if (decision == 1){
+				count = russianRouletteGame(count);
+			} else{
 				break;
-			} else {
-				var dealer = [getCard()];
-				var player = [getCard(), getCard()];
-				count++;
-				var s = blackJackGame(dealer, player, count, cash);
-				cash += s;
-				if (s > 0){
-					wins++;
-				} else if (s < 0){
-					looses++;
-				} else {
-					deadlocks++;
+			}
+		}
+		return (cash * count);
+	}
+
+//Европейская рулетка
+//крутим колесо
+	function getRollingRoulette(num) {
+		var result = Math.round(Math.random() * num);
+		return result;
+	}
+//выбор между двумя сущностями
+	function getChoiseBetweenTwo(type, first,second) {
+		var result;
+		if (type == 1){
+			result = first;
+		} else if (type == 2){
+			result = second;
+		}
+		return result;
+	}
+//тип ставки
+	function getTypeOfBet(decision) {
+		var result;
+		var type;
+		if (decision == 1){
+			while(true){
+				type = prompt("Выберите число от 0 до 36");
+				if (type >= 1 && type <= 36){
+					result = type;
+					break;
+				} else if (type == 0){
+					result = 37;
+					break;
+				} else if (type == "*0"){
+					result = 38;
+					break;
 				}
-				var end = prompt("У вас на руках " + cash + " руб. Хотите продолжить?\n1 - да, остальное - нет");
-				if (end != 1){
-					alert("Ваш результат:\nНичьи: " + deadlocks + "\nПобеды: " + wins + "\nПроигрыши: " + looses + "\nНаличка: " + cash + " руб.");
+			}
+		} else if (decision == 2){
+			while(true){
+				type = prompt("Выберите дюжину или колонну:\n\n1 - 1я дюжина (1-12)\n2 - 2я дюжина (13-24)\n3 - 3я дюжина (25-36)\n4 - 1я колонна (1-34)\n5 - 2я колонна (2-35)\n6 - 3я колонна (3-36)");
+				if (type >= 1 && type <= 6){
+					for (var i = 1; i <= 6; i++){
+						if (i == type){
+							result = (parseInt(type) + 38);
+						}
+					}
+					break;
+				}
+			}
+		} else if (decision == 3){
+			while(true){
+				type = prompt("Выберите чётность:\n1 - Чётное\n2 - Нечётное");
+				if (type >= 1 && type <= 2){
+					result = getChoiseBetweenTwo(type, 45, 46);
+					break;
+				}
+			}
+		} else if (decision == 4){
+			while(true){
+				type = prompt("Выберите цвет:\n1 - Чёрное\n2 - Красное");
+				if (type >= 1 && type <= 2){
+					result = getChoiseBetweenTwo(type, 47, 48);
+					break;
+				}
+			}
+		} else if (decision == 5){
+			while(true){
+				type = prompt("Выберите малые или большие числа:\n1 - 1-18\n2 - 19-36");
+				if (type >= 1 && type <= 2){
+					result = getChoiseBetweenTwo(type, 49, 50);
 					break;
 				}
 			}
 		}
+		return result;
 	}
-	return cash;
-}
-
-//общий функционал игры Русская рулетка
-function russianRouletteGame(count){
-	var fate = Math.round(Math.random() * 5 + 1);
-	if (fate == 1){
-		count = "Смерть";
-	} else {
-		alert("Вы крепко зажмурились, поднесли револьвер к веску...\n\nРаздался щелчок.");
-		count++;
-	}
-	return count;
-}
-//процесс игры
-function russianRoulette(cash){
-	var count = 1;
-	while (true){
-		decision = prompt("Это смертельно опасная игра.\nНа одной чаше весов - увеличение вашего капитала во столько раз, сколько вы продержитесь в живых!\nНа другой - ваша жизнь.\n\nКоличество раундов - " + (count - 1) + "\n\nВы готовы рискнуть?\n1 - Да (Выиграть " + (cash * (count + 1)) + " руб.)\nиначе -  Нет (Забрать " + (cash * count) + " руб.)");
-		if (decision == 1){
-			count = russianRouletteGame(count);
-		} else{
-			break;
+//получаем результат игры
+	function getResult(result, bet, ball) {
+		//до 38 - единичные числа с к-том 35 к 1
+		var text;
+		var text1;
+		var number = [];
+		for (var i = 0; i < 36; i++){
+			number[i] = (i + 1);
 		}
+		number.push[0];
+		number.push[00];
+
+		var dozenColumn = ["1ю дюжину", "2ю дюжину", "3ю дюжину", "1ю колонну", "2ю колонну", "3ю колонну"];
+		var dozenColumn1 = ["1я дюжина", "2я дюжина", "3я дюжина", "1я колонна", "2я колонна", "3я колонна"];
+		var oneByOne = ["Чётное", "Нечётное", "Чёрное", "Красное", "1-18", "19-36"];
+		var oneByOne1 = ["Нечётное", "Чётное", "Красное", "Чёрное", "19-36", "1-18"];
+		var dozens = [12, 24, 36];
+		var columns = [3,6,9,12,15,18,21,24,27,30,33,36];
+		var redNumders = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
+
+		if (result <= 38){
+			text = "число " + number[result];
+			text1 = "о число " + ball;
+			if (ball == number[result]){
+				bet *= 35;
+			} else {
+				bet = (0 - bet);
+			}
+		} else if (result >= 39 && result <= 44){
+			text = dozenColumn[result - 39];
+			if (result >= 39 && result <= 41){
+				if (dozens[result - 39] >= ball && (dozens[result - 39] - 12) < ball){
+					bet *= 2;
+				} else {
+					bet = (0 - bet);
+					if (ball <= 12){
+						text1 = "а " + dozenColumn1[0];
+					} else if (ball <= 24){
+						text1 = "а " + dozenColumn1[1];
+					} else {
+						text1 = "а " + dozenColumn1[2];
+					}
+				}
+			} else{
+				for (var i = 0; i < 3; i++){ 
+					if ((result - 8) % 3 == ball % 3){
+						bet *= 2;
+					} else {
+						bet = (0 - bet);
+						if (ball % 3 == 0){
+							text1 = "а " + dozenColumn1[5];
+						} else if (ball % 3 == 2){
+							text1 = "а " + dozenColumn1[4];
+						} else {
+							text1 = "а " + dozenColumn1[3]
+						}
+					}
+				}
+			}
+		} else {
+			text = oneByOne[result - 45];
+			var even = (ball % 2 == 0);
+			var odd = (ball % 2 == 1);
+			var red = false;
+			var black = true;
+				for (var i = 0; i < redNumders.length; i++){
+					if (redNumders[i] == ball){
+						red = true;
+						black = false;
+					}
+				}
+			var low = true;
+			var high = false;
+			if (ball > 18){
+				low = false;
+				high = true;
+			}
+			//чёт/нечёт
+			if ((result == 45 && even) || (result == 46 && odd)){
+				bet = bet;
+				text1 = "о " + ball + " " + oneByOne[result - 45];
+			} else if (result == 45 || res == 46) {
+				bet = (0 - bet);
+				text1 = "о " + ball + " " + oneByOne1[result - 45];
+			}
+			//Чёрное/красное
+			if ((result == 47 && black) || (result == 48 && red){
+				bet = bet;
+				text1 = "о " + ball + " " + oneByOne[result - 47];
+	} {while
+			// 	bet = bet;
+			// 	text1 = "о " + ball + " " + oneByOne[result - 47];
+			// } else if (){
+			// 	bet = (0 - bet);
+			// 	text1 = "о " + ball + " " + oneByOne1[result - 47];
+			// }
+		
+
+		{
+			
+		if (bet > 0){
+			alert("Вы поставили на " + text + ". Выпал" + text1 + ". Поздравляем с выигрышом.");
+		} else {
+			alert("К сожалению, вы поставили на " + text + ", а выпал" + text1 + ". Попытайте счастья снова.");
+		}
+		return bet;
+		}
+	
+//общий функционал игры Европейская рулетка
+	function europeanRouletteGame(cash, count) {
+		var type = "Выберете тип ставки:\n1 - Ставка на одно число (35 к 1)\n2 - Стаква на дюжину или колонну (2 к 1)\n3 - Чётное/нечётное (1 к 1)\n4 - Красное/чёрное (1 к 1)\n5 - 1-18/19-36 (1 к 1)";
+		var ball;
+		var result;
+		var bet;
+		var array = [1, 2, 5, 10, 50, 100];
+		while (true){
+			decision = prompt(type);
+			if (decision >= 1 && decision <= 4){
+				result = getTypeOfBet(decision); 	//Принятая ставка
+				bet = getBet(count, array);			//Принятая сумма
+				ball = getRollingRoulette(36);		//Выпавшее число
+				cash += parseInt(getResult(result, bet, ball));
+				break;
+			}
+		}
+		return cash;
 	}
-	return (cash * count);
-}
+//процесс игры
+	function europeanRoulette(cash) {
+		var count = 1;
+		while(true){
+			decision = prompt("Добро пожаловать на игру Европейская рулетка.\nУ вас есть " + cash + " руб.\nВы готовы сделать ставку?\n\n1 - Да\nиное - Нет");
+			if (decision == 1){
+				cash = europeanRouletteGame(cash, count);
+				count++;
+			} else {
+				break;
+			}
+		}
+		return cash;
+	}
 
 //начало игры
 var cash = getRandomInt(50, 142);
@@ -282,7 +498,7 @@ while(game){
 	} else if(decision == 2){
 		cash = russianRoulette(cash);
 	} else if(decision == 3){
-		alert("сыграем в европейскую рулетку");
+		cash = europeanRoulette(cash);
 	} else if(decision == 3){
 		alert("сыграем в американскую рулетку (0 и 00)");
 	}
